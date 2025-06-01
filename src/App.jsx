@@ -1,35 +1,59 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
+import Description from "./components/Description/Description";
+import Feedback from "./components/Feedback/Feedback";
+import Notification from "./components/Notification/Notification";
+import Options from "./components/Options/Options";
+
+import "./App.css";
+
+export default function App() {
+  const initialState = {
+    good: 0,
+    neutral: 0,
+    bad: 0,
+  };
+
+  const [feedback, setFeedback] = useState(
+    () => JSON.parse(localStorage.getItem("feedback")) || initialState
+  );
+
+  useEffect(() => {
+    localStorage.setItem("feedback", JSON.stringify(feedback));
+  }, [feedback]);
+
+  const totalFeedback = feedback.good + feedback.neutral + feedback.bad;
+
+  const positiveFeedback = Math.round((feedback.good / totalFeedback) * 100);
+
+  function updateFeedback(type) {
+    setFeedback({ ...feedback, [type]: feedback[type] + 1 });
+  }
+
+  function resetFeedbak() {
+    setFeedback(initialState);
+  }
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Description />
+      <Options
+        updateFeedback={updateFeedback}
+        resetFeedbak={resetFeedbak}
+        total={totalFeedback}
+        types={Object.keys(feedback)}
+      />
+      {totalFeedback > 0 ? (
+        <Feedback
+          feedback={[
+            ...Object.entries(feedback),
+            ["total", totalFeedback],
+            ["positive", positiveFeedback + "%"],
+          ]}
+        />
+      ) : (
+        <Notification />
+      )}
     </>
-  )
+  );
 }
-
-export default App
