@@ -1,0 +1,40 @@
+li {
+  list-style-type: none;
+}
+
+.list {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  width: 300px;
+  margin: 0 auto;
+}
+
+.item {
+  flex: 1 1 calc(33% - 8px);
+  color: whitesmoke;
+  border-radius: 8px;
+  border: 1px solid lightskyblue;
+  span {
+    display: block;
+    padding: 4px;
+  }
+}
+
+.item:nth-child(4),
+.item:nth-child(5) {
+  flex: 1 1 calc(50% - 8px);
+}
+
+.label {
+  &::first-letter {
+    text-transform: uppercase;
+  }
+}
+
+.quantity {
+  font-size: 1.5em;
+  font-weight: 600;
+  color: aqua;
+}
